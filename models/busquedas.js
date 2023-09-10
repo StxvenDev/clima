@@ -1,11 +1,14 @@
+import fs, { readFileSync } from "fs";
+
 import axios from "axios";
 
 class Busqueda {
 
     busqueda = [];
+    rutaDb = './db/database.json'
 
     constructor () {
-
+        this.leerDB()
     }
 
     get paramsMapBox () {
@@ -84,7 +87,32 @@ class Busqueda {
         }
     }
 
+    agregarHistorial(lugar = ''){
+        if(this.busqueda.includes(lugar.toLowerCase())) return;
+        this.busqueda.unshift(lugar.toLowerCase());
+
+        this.guardarDB();
+    }
+
+    guardarDB(){
+        const payload = {
+            busqueda : this.busqueda
+        }
+        fs.writeFileSync(this.rutaDb,JSON.stringify(payload));
+    }
+
+    leerDB(){
+         if(fs.existsSync(this.rutaDb)){  
+            const info = readFileSync(this.rutaDb,{
+                 encoding : 'utf-8'
+             });
+             const {busqueda} = JSON.parse(info);
+             this.busqueda = busqueda;   
+         }
+    }
 }
+
+    
 
 export {
     Busqueda

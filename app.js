@@ -10,7 +10,6 @@ const main = async () => {
     let opt;
     const busquedas = new Busqueda();
     do{
-        console.clear();
         opt = await inquierMenu();
         switch (opt) {
             case 1:
@@ -24,9 +23,9 @@ const main = async () => {
 
                 //listar lugares
                 const id = await listadoLugares(lugares);
-
                 //extraer info del lugar
                 const lugarSel = lugares.find( lugar => lugar.id === id);
+                busquedas.agregarHistorial(lugarSel.name);
                 const clima = await busquedas.climaLugar(lugarSel.lat,lugarSel.lng);
                 console.log('\n Informacion del lugar \n');
                 console.log('Ciudad: ', lugarSel.name);
@@ -39,9 +38,13 @@ const main = async () => {
                 break;
         
             case 2:
-                console.log('Historial')
+                busquedas.busqueda.forEach((lugar,i)=>{
+                    const idx = i+1;
+                    console.log( `${idx}. ${lugar}`);
+                })
                 break;
         }
+       
         await pausa();
     }while(opt != 0)
 
